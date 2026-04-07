@@ -17,17 +17,40 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Explain your design in plain language.
+Real-world recommenders like Spotify combine two factors, mood and audio features (how a song feels — its energy, tempo, and emotional tone and how it makes the listener feel) and what users with similar taste have listened to. Each song is described by a set of numeric and categorical attributes, and the recommender scores every song by comparing those attributes against what the user says they prefer. The three features that drive the score are mood (weighted most heavily, because mood is the clearest expression of what a listener is in the headspace for), energy (how intense or calm a track feels), and genre (whether the user likes soft music or hardcore rock). Songs are ranked by their total weighted score and the top results are returned.
 
-Some prompts to answer:
+**Song features used:**
+- `mood` — emotional tone of the track (e.g. happy, chill, intense)
+- `energy` — how intense or calm the track feels (0.0–1.0)
+- `genre` — musical category (e.g. pop, lofi, jazz)
+- `acousticness` — organic/acoustic vs. electronic sound (0.0–1.0)
+- `valence` — musical positivity (0.0–1.0)
+- `danceability` — how suitable the track is for dancing (0.0–1.0)
+- `tempo_bpm` — speed of the track in beats per minute
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+**UserProfile fields used:**
+- `favorite_mood` — the emotional tone the user is looking for
+- `favorite_genre` — the user's preferred genre
+- `target_energy` — how high or low energy the user wants songs to feel
+- `likes_acoustic` — whether the user prefers acoustic or electronic sounds
 
-You can include a simple diagram or bullet list if helpful.
+Algorithm Recipe: 
+1. Take in user input: songs.csv + the UserProfile 
+2. Parse every row of songs.csv into a song dict with fields: genre, mood, energy, tempo_bpm, valence, danceability, acousticness.
+3. Score each song (repeat for all 20 songs)
+  Genre match → +2.0 if song.genre == favorite_genre
+  Mood match → +3.0 if song.mood == favorite_mood 
+  Energy proximity → (1 − |song.energy − target_energy|) × 2.0
+  Valence proximity → (1 − |song.valence − target_valence|) × 1.5
+  Danceability proximity → (1 − |song.danceability − target_danceability|) × 1.0
+  Acoustic penalty → −1.0 if song.acousticness > 0.7 and likes_acoustic = False
+  Max possible score: 10.5
+4. sort all the scored songs descending in order of total score 
+5. Slice the top k results (default k=5). For each, emit (song, score, explanation).
+
+Biases: 
+- Mood can be subjective. Happy and Playful songs could be different but also the same. It depends on user opinion in this case, so we have to try to be as accurate as possible. 
+- With only 20 songs, a single genre label match can dominate the entire ranking. In a real catalog of millions, these weights would need recalibration.
 
 ---
 

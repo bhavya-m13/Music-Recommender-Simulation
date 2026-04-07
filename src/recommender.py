@@ -23,11 +23,24 @@ class UserProfile:
     """
     Represents a user's taste preferences.
     Required by tests/test_recommender.py
+
+    Fields
+    ------
+    favorite_genre   : primary genre the user gravitates toward
+    favorite_mood    : emotional tone the user most often wants
+    target_energy    : 0.0–1.0 preferred intensity level
+    target_tempo_bpm : preferred beats-per-minute
+    target_valence   : 0.0–1.0 positivity/happiness preference
+    target_danceability : 0.0–1.0 preference for rhythmic, danceable tracks
+    likes_acoustic   : True → prefers organic/acoustic textures
     """
-    favorite_genre: str
-    favorite_mood: str
-    target_energy: float
-    likes_acoustic: bool
+    favorite_genre: str       = "pop"
+    favorite_mood: str        = "happy"
+    target_energy: float      = 0.78   # moderately high — upbeat but not brutal
+    target_tempo_bpm: float   = 118.0  # comfortable uptempo feel
+    target_valence: float     = 0.80   # leans positive / feel-good
+    target_danceability: float= 0.82   # enjoys rhythmic, groovy tracks
+    likes_acoustic: bool      = False  # prefers produced/electronic textures
 
 class Recommender:
     """
