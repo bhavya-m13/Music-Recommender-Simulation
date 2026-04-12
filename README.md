@@ -57,6 +57,14 @@ Biases:
 ![alt text](CLIVerification.png)
 ---
 
+Screenshots for Phase 4, Step 1: 
+![High Energy Pop](<Screenshot 2026-04-12 at 5.55.44 PM.png>)
+![Chill Lofi](<Screenshot 2026-04-12 at 5.55.55 PM.png>)
+![Deep Intense Rock](<Screenshot 2026-04-12 at 5.56.03 PM.png>)
+![Chill Mood But Extreme Energy](<Screenshot 2026-04-12 at 5.56.16 PM.png>)
+![Sad Mood](<Screenshot 2026-04-12 at 5.56.34 PM.png>)
+
+
 
 ## Getting Started
 
@@ -119,16 +127,22 @@ You will go deeper on this in your model card.
 
 ## Reflection
 
-Read and complete `model_card.md`:
-
 [**Model Card**](model_card.md)
 
-Write 1 to 2 paragraphs here about what you learned:
+Here it is:
 
-- about how recommenders turn data into predictions
-- about where bias or unfairness could show up in systems like this
-
-
+High-Energy Pop vs. Chill Lofi
+These two are direct opposites and the results show it. The pop user gets upbeat songs like Sunrise City and Rooftop Lights at the top while the lofi user gets quiet tracks like Library Rain and Midnight Coding. Both mood and genre point the same direction for each profile so there's no conflict, which is exactly the easy case the system was built for.
+High-Energy Pop vs. Chill Mood but Extreme Energy
+This is where it gets weird. Both profiles actually want high-energy music but the second profile's mood is set to "chill" and that one word flips everything. Instead of loud fast songs, the chill user gets Library Rain and Midnight Coding at the top even though their energy preference is set higher than the pop user's. Mood is worth 3.0 points in the score which is more than energy can earn even with a perfect match, so the system basically hears "chill" and stops listening to everything else.
+Deep Intense Rock vs. Chill Mood but Extreme Energy
+Both profiles want high-energy music but one says "intense" and the other says "chill." The rock profile gets Storm Runner at 10.21 while the chill profile, asking for nearly the same energy level, gets lofi songs around 7.0. That's almost a 3 point gap caused entirely by a single mood label. Two people who would probably enjoy the same song at the gym end up with completely different playlists.
+Acoustic Lover vs. Chill Lofi
+These two should produce similar results since both want calm low-energy music and both are fine with acoustic sounds. They do share some overlap, Library Rain appears in both top fives, but the winners differ. Chill Lofi gets Library Rain and Midnight Coding because those match on genre and mood. Acoustic Lover gets Stargazing because its genre and mood are an exact label match. The interesting part is that likes_acoustic: True didn't actually help either profile since the scorer never uses that flag as a positive signal, only as a penalty for the opposite preference.
+Sad Mood (not in catalog) vs. All-Median Preferences
+These two are both broken but in different ways. The sad mood user gets Good Riddance at number one with 7.16 points, not because of a mood match since "sad" doesn't exist in the catalog, but because it had the lowest energy and valence in the dataset. Everything below it scores between 5.2 and 5.7, a pile of songs the system can barely tell apart. The all-median user gets Focus Flow at number one with 8.87, a deceptively confident score, but only because Focus Flow happened to have a matching mood label. Both profiles expose the same problem: when the strongest signals can't fire, the system still returns a ranked list that looks authoritative even though it isn't.
+Tempo Obsessed vs. Deep Intense Rock
+Both profiles want dark aggressive high-energy music. Deep Intense Rock gets Storm Runner at the top because it matches on genre and mood at the same time. Tempo Obsessed gets Harlequin at a perfect 10.5 because its genre, mood, energy, valence and danceability are almost exactly what the profile asked for. Harlequin doesn't appear for the rock profile though because it carries the wrong genre and mood labels, even though both songs would feel equally intense to a human listener. The system can't hear the music. It only reads the tags.
 ---
 
 ## 7. `model_card_template.md`
@@ -142,7 +156,7 @@ Combines reflection and model card framing from the Module 3 guidance. :contentR
 
 Give your recommender a name, for example:
 
-> VibeFinder 1.0
+> M
 
 ---
 
