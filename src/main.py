@@ -13,6 +13,7 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(__file__))
 
+from tabulate import tabulate
 from recommender import load_songs, recommend_songs
 
 
@@ -122,17 +123,22 @@ PROFILES = {
 
 
 def print_recommendations(label: str, recommendations: list) -> None:
-    """Print a formatted recommendations block for one user profile."""
-    print("\n" + "=" * 40)
-    print(f"  {label.upper()}")
-    print("=" * 40)
+    """Print recommendations as an ASCII table with per-row scoring reasons."""
+    rows = []
     for i, (song, score, explanation) in enumerate(recommendations, start=1):
-        print(f"\n#{i}  {song['title']} — {song['artist']}")
-        print(f"    Genre: {song['genre']}  |  Mood: {song['mood']}")
-        print(f"    Score: {score:.2f} / 10.5")
-        for reason in explanation.split(", "):
-            print(f"      • {reason}")
-    print("\n" + "=" * 40)
+        reasons = "\n".join(f"• {r.strip()}" for r in explanation.split(","))
+        rows.append([
+            i,
+            f"{song['title']}\n{song['artist']}",
+            f"{song['genre']}\n{song['mood']}",
+            f"{score:.2f} / 10.5",
+            reasons,
+        ])
+
+    headers = ["#", "Song / Artist", "Genre / Mood", "Score", "Scoring Reasons"]
+    print(f"\n  {label.upper()}")
+    print(tabulate(rows, headers=headers, tablefmt="grid"))
+    print()
 
 
 def main() -> None:
