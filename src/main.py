@@ -9,6 +9,10 @@ You will implement the functions in recommender.py:
 - recommend_songs
 """
 
+import sys
+import os
+sys.path.insert(0, os.path.dirname(__file__))
+
 from recommender import load_songs, recommend_songs
 
 
@@ -28,14 +32,16 @@ def main() -> None:
 
     recommendations = recommend_songs(user_prefs, songs, k=5)
 
-    print("\nTop recommendations:\n")
-    for rec in recommendations:
-        # You decide the structure of each returned item.
-        # A common pattern is: (song, score, explanation)
-        song, score, explanation = rec
-        print(f"{song['title']} - Score: {score:.2f}")
-        print(f"Because: {explanation}")
-        print()
+    print("\n" + "=" * 40)
+    print("  TOP RECOMMENDATIONS")
+    print("=" * 40)
+    for i, (song, score, explanation) in enumerate(recommendations, start=1):
+        print(f"\n#{i}  {song['title']} — {song['artist']}")
+        print(f"    Genre: {song['genre']}  |  Mood: {song['mood']}")
+        print(f"    Score: {score:.2f} / 10.5")
+        for reason in explanation.split(", "):
+            print(f"      • {reason}")
+    print("\n" + "=" * 40)
 
 
 if __name__ == "__main__":

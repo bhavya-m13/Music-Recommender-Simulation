@@ -52,7 +52,11 @@ Biases:
 - Mood can be subjective. Happy and Playful songs could be different but also the same. It depends on user opinion in this case, so we have to try to be as accurate as possible. 
 - With only 20 songs, a single genre label match can dominate the entire ranking. In a real catalog of millions, these weights would need recalibration.
 
+
+**This is the screenshot for Phase 3, Step 4: 
+![alt text](CLIVerification.png)
 ---
+
 
 ## Getting Started
 
